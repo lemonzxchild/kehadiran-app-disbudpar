@@ -1,0 +1,44 @@
+<div>
+    <form wire:submit.prevent="savePositions" method="post">
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul class="m-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        @foreach ($positions as $position)
+            <div class="mb-3">
+                <x-form-label id="partof_id{{ $position['id'] }}" label='Bagian {{ $loop->iteration }}' />
+                <select class="form-select" aria-label="Default select example" name="partof_id"
+                    wire:model.defer="positions.{{ $loop->index }}.partof_id">
+                    <option selected disabled>-- Pilih partof --</option>
+                    @foreach ($partofs as $partof)
+                        <option value="{{ $partof->id }}">{{ ucfirst($partof->name) }}</option>
+                    @endforeach
+                </select>
+                <x-form-error key="positions.{{ $loop->index }}.partof_id" />
+            </div>
+            <div class="mb-3 position-relative">
+                <x-form-label id="name{{ $position['id'] }}"
+                    label="Nama Posisi {{ $loop->iteration }} (ID: {{ $position['id'] }})" />
+                <div class="d-flex align-items-center">
+                    <x-form-input id="name{{ $position['id'] }}" name="name{{ $position['id'] }}"
+                        wire:model.defer="positions.{{ $loop->index }}.name" value="{{ $position['name'] }}" />
+                </div>
+            </div>
+        @endforeach
+
+        <div class="d-flex justify-content-between align-items-center">
+            <button class="btn btn-primary">
+                Simpan
+                <div wire:loading>
+                    ...
+                </div>
+            </button>
+        </div>
+    </form>
+</div>
